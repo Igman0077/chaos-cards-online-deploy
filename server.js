@@ -334,6 +334,7 @@ io.on('connection', (socket) => {
 
       const leaving = room.players[idx];
       const wasHost = room.hostId === socket.id;
+      const wasCzar = idx === room.czarIndex;
       room.players.splice(idx, 1);
 
       if (!room.players.length) {
@@ -349,7 +350,12 @@ io.on('connection', (socket) => {
         if (newHost) io.to(room.code).emit('chat', { name: 'System', text: `🛡️ ${newHost.name} is now host.` });
       }
 
+      if (idx < room.czarIndex) room.czarIndex -= 1;
       if (room.czarIndex >= room.players.length) room.czarIndex = 0;
+      if (wasCzar) {
+        const newCzar = room.players[room.czarIndex];
+        if (newCzar) io.to(room.code).emit('chat', { name: 'System', text: `👑 ${newCzar.name} is now judge.` });
+      }
 
       if (room.phase === 'playing') {
         maybeJudging(room);
