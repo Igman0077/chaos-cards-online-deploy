@@ -8,7 +8,12 @@ const $ = s => document.querySelector(s);
 
 $('#name').value = localStorage.getItem('chaos_name') || '';
 const roomFromUrl = new URLSearchParams(location.search).get('room');
-if (roomFromUrl) $('#joinCode').value = roomFromUrl.toUpperCase();
+if (roomFromUrl) {
+  $('#joinCode').value = roomFromUrl.toUpperCase();
+  if (!$('#name').value.trim()) {
+    $('#lobbyMsg').textContent = 'Invite detected. Enter your name, then tap Join Room.';
+  }
+}
 let attemptedAutoJoin = false;
 setConn('Connecting...');
 
