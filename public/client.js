@@ -151,6 +151,17 @@ function render() {
   $('#submitBtn').disabled = !canPlay || selected.length !== pick;
   $('#submittedBadge').classList.toggle('hidden', !(me?.submitted && state.phase === 'playing'));
 
+  const turnBadge = $('#turnBadge');
+  if (state.phase === 'playing' && me && me.id === czarId) {
+    turnBadge.textContent = '👑 You are judging this round';
+    turnBadge.classList.remove('hidden');
+  } else if (state.phase === 'judging' && me && me.id !== czarId) {
+    turnBadge.textContent = '⏳ Waiting for judge decision';
+    turnBadge.classList.remove('hidden');
+  } else {
+    turnBadge.classList.add('hidden');
+  }
+
   const waiting = state.waitingOn || [];
   const meWaiting = waiting.some(w => w.id === me?.id);
   $('#roundStatus').textContent = state.phase === 'playing'
