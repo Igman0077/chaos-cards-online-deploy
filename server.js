@@ -329,6 +329,8 @@ io.on('connection', (socket) => {
     for (const room of rooms.values()) {
       const idx = room.players.findIndex(p => p.id === socket.id);
       if (idx === -1) continue;
+
+      const leaving = room.players[idx];
       const wasHost = room.hostId === socket.id;
       room.players.splice(idx, 1);
 
@@ -337,7 +339,14 @@ io.on('connection', (socket) => {
         continue;
       }
 
-      if (wasHost) room.hostId = room.players[0].id;
+      io.to(room.code).emit('chat', { name: 'System', text: `👋 ${leaving.name} left the room.` });
+
+      if (wasHost) {
+        room.hostId = room.players[0].id;
+        const newHost = room.players.find(p => p.id === room.hostId);
+        if (newHost) io.to(room.code).emit('chat', { name: 'System', text: `🛡️ ${newHost.name} is now host.` });
+      }
+
       if (room.czarIndex >= room.players.length) room.czarIndex = 0;
 
       if (room.phase === 'playing') {
