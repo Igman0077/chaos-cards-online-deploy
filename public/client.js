@@ -7,6 +7,8 @@ let timerTick = null;
 const $ = s => document.querySelector(s);
 
 $('#name').value = localStorage.getItem('chaos_name') || '';
+const roomFromUrl = new URLSearchParams(location.search).get('room');
+if (roomFromUrl) $('#joinCode').value = roomFromUrl.toUpperCase();
 setConn('Connecting...');
 
 socket.on('connect', () => setConn('Connected'));
@@ -39,6 +41,16 @@ $('#copyCodeBtn').onclick = async () => {
     toast('Room code copied');
   } catch {
     toast(`Code: ${roomCode}`);
+  }
+};
+$('#copyLinkBtn').onclick = async () => {
+  if (!roomCode) return;
+  const url = `${location.origin}?room=${encodeURIComponent(roomCode)}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    toast('Invite link copied');
+  } catch {
+    toast(url);
   }
 };
 
@@ -133,6 +145,7 @@ function render() {
 
   $('#submitBtn').style.display = canPlay ? 'inline-flex' : 'none';
   $('#submitBtn').disabled = !canPlay || selected.length !== pick;
+  $('#submittedBadge').classList.toggle('hidden', !(me?.submitted && state.phase === 'playing'));
 
   const waiting = state.waitingOn || [];
   const meWaiting = waiting.some(w => w.id === me?.id);
