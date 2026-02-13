@@ -234,6 +234,7 @@ io.on('connection', (socket) => {
   socket.on('startGame', ({ code: c, winScore }) => {
     const room = rooms.get((c || '').toUpperCase());
     if (!room || room.hostId !== socket.id) return;
+    if (room.started) return;
     if (room.players.length < 3) return socket.emit('err', 'Need at least 3 players.');
     room.winScore = [5,7,10].includes(Number(winScore)) ? Number(winScore) : WIN_SCORE;
     room.started = true;
@@ -248,6 +249,7 @@ io.on('connection', (socket) => {
   socket.on('restartGame', ({ code: c, winScore }) => {
     const room = rooms.get((c || '').toUpperCase());
     if (!room || room.hostId !== socket.id) return;
+    if (room.phase !== 'ended') return;
     if (room.players.length < 3) return socket.emit('err', 'Need at least 3 players.');
 
     room.winScore = [5,7,10].includes(Number(winScore)) ? Number(winScore) : (room.winScore || WIN_SCORE);
