@@ -121,7 +121,8 @@ socket.on('chat', ({ name, text }) => addChat(`<strong>${escapeHtml(name)}:</str
 function render() {
   if (!state) return;
   $('#roomCode').textContent = state.code;
-  $('#phase').textContent = `Round ${state.round} • ${state.phase.toUpperCase()} • First to ${state.winScore || 7}`;
+  const phaseLabel = state.phase === 'playing' ? 'PLAYING' : state.phase === 'judging' ? 'JUDGING' : state.phase === 'reveal' ? 'REVEAL' : state.phase.toUpperCase();
+  $('#phase').textContent = `Round ${state.round} • ${phaseLabel} • First to ${state.winScore || 7}`;
   const me = state.me;
   const isHost = me && state.players[0]?.id === me.id;
   $('#youAreHost').classList.toggle('hidden', !isHost);
@@ -156,7 +157,9 @@ function render() {
     ? (me && me.id === czarId
       ? `Waiting on ${waiting.length} player(s) to submit.`
       : (meWaiting ? 'Waiting for your submission.' : `Submitted. Waiting on ${waiting.length} other player(s).`))
-    : (state.phase === 'judging' ? 'Judge is selecting the winner.' : '');
+    : (state.phase === 'judging'
+      ? 'Judge is selecting the winner.'
+      : (state.phase === 'reveal' ? 'Revealing winner... next round loading.' : ''));
 
   const myHand = me?.hand || [];
   $('#hand').innerHTML = myHand.map(card =>
