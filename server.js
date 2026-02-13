@@ -190,6 +190,7 @@ setInterval(() => {
     room.players.forEach(p => {
       if (p.id === czarId || p.submitted) return;
       const pick = room.currentBlack?.pick || 1;
+      while (p.hand.length < pick) p.hand.push(...drawWhite(room, 1));
       const cards = p.hand.splice(0, pick);
       p.submitted = true;
       room.submissions.push({ id: p.id, cards });
