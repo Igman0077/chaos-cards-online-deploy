@@ -1,5 +1,7 @@
 const express = require('express');
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -12,7 +14,7 @@ const WIN_SCORE = 7;
 const rooms = new Map();
 const ROUND_SECONDS = 45;
 
-const blackDeckBase = [
+const DEFAULT_BLACK_DECK = [
   { text: 'My toxic trait is _____.', pick: 1 },
   { text: 'Nothing ruins a party faster than _____.', pick: 1 },
   { text: 'At brunch, I accidentally ordered _____.', pick: 1 },
@@ -22,32 +24,42 @@ const blackDeckBase = [
   { text: 'Step 1: _____. Step 2: profit.', pick: 1 },
   { text: 'The only thing keeping me going is _____.', pick: 1 },
   { text: 'On my vision board: more money, less stress, and _____.', pick: 1 },
-  { text: 'The worst thing to hear on a first date: _____.', pick: 1 },
-  { text: 'My therapist said I should stop _____, but here we are.', pick: 1 },
-  { text: 'The school banned me for bringing _____.', pick: 1 },
-  { text: 'Tonight\'s special at this restaurant is _____.', pick: 1 },
-  { text: 'The app crashed because of _____.', pick: 1 },
-  { text: 'In my villain origin story, it all started with _____.', pick: 1 }
+  { text: 'The worst thing to hear on a first date: _____.', pick: 1 }
 ];
 
-const whiteDeckBase = [
+const DEFAULT_WHITE_DECK = [
   'a suspiciously wet sock', 'a dramatic spreadsheet', 'unearned confidence', 'microwaved sushi',
   'a haunted air fryer', 'group project trauma', 'aggressive eye contact', 'a cursed coupon',
   'an emotional support burrito', 'three raccoons in a trench coat', 'a motivational scream',
   'budget champagne', 'a questionable mustache', 'main-character delusion', 'expired glitter',
-  'a pirate therapist', 'an unsolicited TED Talk', 'cold pizza at 2am', 'vibes and poor decisions',
-  'an awkward thumbs-up', 'chaotic neutral energy', 'a fake plant with attitude', 'overpriced coffee',
-  'an accidental double text', 'a karaoke betrayal', 'a cursed horoscope', 'being perceived',
-  'a flaming group chat', 'an illegal amount of garlic', 'the audacity', 'a tactical nap',
-  'a glitter explosion', 'instant regret', 'emotional damage in 4K', 'a feral pep talk',
-  'an alarming amount of mayonnaise', 'the final boss of Mondays', 'secondhand embarrassment',
-  'a spicy rumor', 'a tiny cowboy hat', 'zero impulse control', 'a dramatic exit',
-  'the plot thickening', 'a haunted Roomba', 'a passive-aggressive sticky note', 'vintage chaos',
-  'unlicensed wizardry', 'too much cologne', 'an existential snack break', 'accidental villain era',
-  'a suspiciously specific apology', 'the Wi-Fi dying at the worst time', 'screaming internally',
-  'an overcooked life plan', 'a socially distant meltdown', 'the forbidden leftovers',
-  'chaotic brunch energy', 'an apology tour', 'hot gossip with no citations', 'a dramatic eye roll'
+  'an unsolicited TED Talk', 'cold pizza at 2am', 'vibes and poor decisions', 'an awkward thumbs-up',
+  'chaotic neutral energy', 'overpriced coffee', 'instant regret', 'a feral pep talk', 'secondhand embarrassment'
 ];
+
+function loadDecks() {
+  try {
+    const blackPath = path.join(__dirname, 'public', 'cards-black.json');
+    const whitePath = path.join(__dirname, 'public', 'cards-white.json');
+    const black = JSON.parse(fs.readFileSync(blackPath, 'utf8'));
+    const white = JSON.parse(fs.readFileSync(whitePath, 'utf8'));
+
+    const validBlack = Array.isArray(black)
+      ? black.filter(c => c && typeof c.text === 'string' && Number(c.pick || 1) >= 1).map(c => ({ text: c.text, pick: Number(c.pick || 1) }))
+      : [];
+    const validWhite = Array.isArray(white)
+      ? white.filter(w => typeof w === 'string' && w.trim().length > 0)
+      : [];
+
+    return {
+      blackDeckBase: validBlack.length ? validBlack : DEFAULT_BLACK_DECK,
+      whiteDeckBase: validWhite.length ? validWhite : DEFAULT_WHITE_DECK
+    };
+  } catch {
+    return { blackDeckBase: DEFAULT_BLACK_DECK, whiteDeckBase: DEFAULT_WHITE_DECK };
+  }
+}
+
+const { blackDeckBase, whiteDeckBase } = loadDecks();
 
 function shuffled(arr) {
   const a = [...arr];
