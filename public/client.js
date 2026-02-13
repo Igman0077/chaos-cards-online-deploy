@@ -1,4 +1,5 @@
 const socket = io();
+const BUILD_ID = '2026-02-13-1740';
 let roomCode = null;
 let state = null;
 let selected = [];
@@ -16,6 +17,7 @@ if (roomFromUrl) {
 }
 let attemptedAutoJoin = false;
 setConn('Connecting...');
+$('#buildInfo').textContent = `Build: ${BUILD_ID}`;
 
 socket.on('connect', () => {
   setConn('Connected');
