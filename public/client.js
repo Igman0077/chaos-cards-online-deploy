@@ -9,9 +9,17 @@ const $ = s => document.querySelector(s);
 $('#name').value = localStorage.getItem('chaos_name') || '';
 const roomFromUrl = new URLSearchParams(location.search).get('room');
 if (roomFromUrl) $('#joinCode').value = roomFromUrl.toUpperCase();
+let attemptedAutoJoin = false;
 setConn('Connecting...');
 
-socket.on('connect', () => setConn('Connected'));
+socket.on('connect', () => {
+  setConn('Connected');
+  const savedName = ($('#name').value || '').trim();
+  if (!attemptedAutoJoin && roomFromUrl && savedName) {
+    attemptedAutoJoin = true;
+    socket.emit('joinRoom', { code: roomFromUrl.toUpperCase(), name: savedName });
+  }
+});
 socket.on('disconnect', () => setConn('Disconnected'));
 
 $('#createBtn').onclick = () => {
