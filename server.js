@@ -346,6 +346,16 @@ io.on('connection', (socket) => {
 
       io.to(room.code).emit('chat', { name: 'System', text: `👋 ${leaving.name} left the room.` });
 
+      if (room.started && room.players.length < 3) {
+        room.started = false;
+        room.phase = 'lobby';
+        room.phaseEndsAt = null;
+        room.currentBlack = null;
+        room.submissions = [];
+        room.players.forEach(p => { p.hand = []; p.submitted = false; p.score = 0; });
+        io.to(room.code).emit('chat', { name: 'System', text: '⏸️ Game paused: need at least 3 players to continue.' });
+      }
+
       if (wasHost) {
         room.hostId = room.players[0].id;
         const newHost = room.players.find(p => p.id === room.hostId);
