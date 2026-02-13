@@ -140,8 +140,8 @@ function publicState(room, viewerId) {
     currentBlack: room.currentBlack,
     winScore: room.winScore || WIN_SCORE,
     czarId: czar?.id || null,
-    players: room.players.map(p => ({ id: p.id, name: p.name, score: p.score, handCount: p.hand.length })),
-    me: room.players.find(p => p.id === viewerId) || null,
+    hostId: room.hostId || null,
+    players: room.players.map(p => ({ id: p.id, name: p.name, score: p.score, handCount: p.hand.length })),    me: room.players.find(p => p.id === viewerId) || null,
     phaseEndsAt: room.phaseEndsAt,
     waitingOn,
     submissions: room.phase === 'judging'
@@ -292,11 +292,13 @@ io.on('connection', (socket) => {
     const czar = room.players[room.czarIndex];
     if (!czar || czar.id !== socket.id) return;
 
+    const winningSubmission = room.submissions.find(s => s.id === winnerId);
+    if (!winningSubmission) return;
     const winner = room.players.find(p => p.id === winnerId);
     if (!winner) return;
     winner.score += 1;
 
-    io.to(room.code).emit('roundResult', { winner: winner.name, cards: room.submissions.find(s => s.id === winnerId)?.cards || [] });
+    io.to(room.code).emit('roundResult', { winner: winner.name, cards: winningSubmission.cards || [] });
 
     if (winner.score >= (room.winScore || WIN_SCORE)) {
       room.phase = 'ended';
@@ -351,9 +353,8 @@ io.on('connection', (socket) => {
 
       if (room.phase === 'playing') {
         maybeJudging(room);
-      } else {
-        broadcast(room);
       }
+      broadcast(room);
     }
   });
 });

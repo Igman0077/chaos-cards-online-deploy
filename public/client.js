@@ -132,7 +132,7 @@ function render() {
   const phaseLabel = state.phase === 'playing' ? 'PLAYING' : state.phase === 'judging' ? 'JUDGING' : state.phase === 'reveal' ? 'REVEAL' : state.phase.toUpperCase();
   $('#phase').textContent = `Round ${state.round} • ${phaseLabel} • First to ${state.winScore || 7}`;
   const me = state.me;
-  const isHost = me && state.players[0]?.id === me.id;
+  const isHost = me && state.hostId === me.id;
   $('#youAreHost').classList.toggle('hidden', !isHost);
   $('#startBtn').style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
   $('#winScore').style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
