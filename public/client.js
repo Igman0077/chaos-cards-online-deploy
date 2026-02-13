@@ -124,6 +124,7 @@ function render() {
   $('#phase').textContent = `Round ${state.round} • ${state.phase.toUpperCase()} • First to ${state.winScore || 7}`;
   const me = state.me;
   const isHost = me && state.players[0]?.id === me.id;
+  $('#youAreHost').classList.toggle('hidden', !isHost);
   $('#startBtn').style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
   $('#winScore').style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
   $('#restartBtn').classList.toggle('hidden', !(state.phase === 'ended' && isHost));

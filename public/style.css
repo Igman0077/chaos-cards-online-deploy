@@ -8,6 +8,7 @@
 .btn{display:inline-flex;align-items:center;justify-content:center;padding:0 14px;min-height:42px;border:1px solid #4c66a6;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;cursor:pointer}.btn.ghost{background:transparent;color:#c7d7ff;border-color:#506bad}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px}.top h2{margin:0}.top p{margin:.2rem 0 0;color:var(--muted)}
 .timer{display:inline-flex;align-items:center;justify-content:center;min-width:62px;min-height:42px;padding:0 10px;border-radius:10px;background:#0d1730;border:1px solid var(--line);font-weight:800;color:#fcd34d}
+.host-badge{display:inline-flex;align-items:center;justify-content:center;margin-left:.45rem;padding:.12rem .45rem;border-radius:999px;background:#0f2a1d;border:1px solid #2f8f55;color:#86efac;font-size:.72rem;font-weight:800;letter-spacing:.04em}
 .submitted{display:inline-flex;align-items:center;gap:.35rem;background:#0f2a1d;border:1px solid #2f8f55;color:#86efac;padding:.25rem .55rem;border-radius:999px;font-size:.82rem;font-weight:700}
 .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.black-card{background:#0f1628;border:2px dashed #4a5f90;border-radius:14px;padding:20px;font-weight:800;font-size:1.18rem;min-height:120px;display:grid;place-items:center;text-align:center}
 .players{list-style:none;margin:0;padding:0;display:grid;gap:6px}.players li{background:#0d1730;border:1px solid var(--line);padding:8px;border-radius:9px}
