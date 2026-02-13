@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chaos Cards Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <section id="lobby" class="panel card">
+      <h1>🎉 Chaos Cards Online</h1>
+      <p class="sub">Multiplayer party card chaos. First to 7 points wins.</p>
+      <div class="row">
+        <input id="name" placeholder="Your name" maxlength="24" />
+      </div>
+      <div class="row lobby-actions">
+        <button id="createBtn" class="btn" type="button">Create Room</button>
+        <input id="joinCode" placeholder="ROOM CODE" maxlength="8" />
+        <button id="joinBtn" class="btn ghost" type="button">Join</button>
+      </div>
+      <p id="lobbyMsg" class="msg"></p>
+    </section>
+
+    <section id="game" class="hidden">
+      <header class="top card">
+        <div>
+          <h2>Room <span id="roomCode">----</span></h2>
+          <p id="phase"></p>
+        </div>
+        <div class="top-actions">
+          <button id="copyCodeBtn" class="btn ghost">Copy Code</button>
+          <select id="winScore" class="win-select">
+            <option value="5">First to 5</option>
+            <option value="7" selected>First to 7</option>
+            <option value="10">First to 10</option>
+          </select>
+          <span id="timer" class="timer">--s</span>
+          <button id="startBtn" class="btn">Start Game</button>
+          <button id="restartBtn" class="btn ghost hidden">Play Again</button>
+          <button id="leaveBtn" class="btn ghost">Leave</button>
+        </div>
+      </header>
+
+      <section class="grid">
+        <article class="card">
+          <h3>Black Card</h3>
+          <div id="blackCard" class="black-card">Waiting for host to start…</div>
+        </article>
+
+        <article class="card">
+          <h3>Players</h3>
+          <ul id="players" class="players"></ul>
+        </article>
+      </section>
+
+      <section class="card">
+        <h3>Your Hand</h3>
+        <p class="sub" id="handHint">Pick a card to submit.</p>
+        <div id="hand" class="hand"></div>
+        <button id="submitBtn" class="btn">Submit Selected</button>
+      </section>
+
+      <section class="card">
+        <h3>Judge Picks Winner</h3>
+        <p id="roundStatus" class="sub"></p>
+        <div id="roundResult" class="result hidden"></div>
+        <div id="submissions" class="submissions"></div>
+      </section>
+
+      <section class="card chat">
+        <div id="toast" class="toast hidden"></div>
+        <div class="head-row">
+          <h3>Chat</h3>
+          <span id="conn" class="conn">Connecting...</span>
+        </div>
+        <div id="chatLog" class="chat-log"></div>
+        <div class="row">
+          <input id="chatInput" placeholder="Type chaos..." maxlength="220"/>
+          <button id="sendBtn" class="btn ghost">Send</button>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
