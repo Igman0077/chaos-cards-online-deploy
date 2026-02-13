@@ -217,6 +217,10 @@ io.on('connection', (socket) => {
 
   socket.on('joinRoom', ({ code: c, name }) => {
     const room = rooms.get((c || '').toUpperCase());
+    if (room && room.players.some(p => p.id === socket.id)) {
+      socket.emit('roomJoined', { code: room.code });
+      return;
+    }
     if (!room) return socket.emit('err', 'Room not found.');
     if (room.started) return socket.emit('err', 'Game already started.');
     if (room.players.length >= 10) return socket.emit('err', 'Room full.');

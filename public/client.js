@@ -80,6 +80,7 @@ function sendChat() {
 
 socket.on('roomCreated', ({ code }) => {
   roomCode = code;
+  history.replaceState(null, '', `${location.pathname}?room=${encodeURIComponent(code)}`);
   $('#lobbyMsg').textContent = `Room created: ${code}`;
   $('#lobby').classList.add('hidden');
   $('#game').classList.remove('hidden');
@@ -87,6 +88,7 @@ socket.on('roomCreated', ({ code }) => {
 
 socket.on('roomJoined', ({ code }) => {
   roomCode = code;
+  history.replaceState(null, '', `${location.pathname}?room=${encodeURIComponent(code)}`);
   $('#lobby').classList.add('hidden');
   $('#game').classList.remove('hidden');
 });
