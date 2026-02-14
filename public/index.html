@@ -22,28 +22,32 @@
         <input id="joinCode" placeholder="ROOM CODE" maxlength="8" />
         <button id="joinBtn" class="btn ghost" type="button">Join</button>
       </div>
-      <p id="lobbyMsg" class="msg"></p>
+      <p id="lobbyMsg" class="msg" aria-live="polite"></p>
     </section>
 
     <section id="game" class="hidden">
       <header class="top card">
         <div>
           <h2>Room <span id="roomCode">----</span> <span id="youAreHost" class="host-badge hidden">HOST</span></h2>
-          <p id="phase"></p>
+          <p id="phase" aria-live="polite"></p>
           <p id="buildInfo" class="build">Build: local</p>
         </div>
         <div class="top-actions">
-          <button id="copyCodeBtn" class="btn ghost">Copy Code</button>
-          <button id="copyLinkBtn" class="btn ghost">Copy Invite Link</button>
-          <select id="winScore" class="win-select">
-            <option value="5">First to 5</option>
-            <option value="7" selected>First to 7</option>
-            <option value="10">First to 10</option>
-          </select>
-          <span id="timer" class="timer">--s</span>
-          <button id="startBtn" class="btn">Start Game</button>
-          <button id="restartBtn" class="btn ghost hidden">Play Again</button>
-          <button id="leaveBtn" class="btn ghost">Leave</button>
+          <div class="action-row">
+            <button id="copyCodeBtn" class="btn ghost">Copy Code</button>
+            <button id="copyLinkBtn" class="btn ghost">Copy Invite Link</button>
+            <span id="timer" class="timer">--s</span>
+          </div>
+          <div class="action-row">
+            <select id="winScore" class="win-select">
+              <option value="5">First to 5</option>
+              <option value="7" selected>First to 7</option>
+              <option value="10">First to 10</option>
+            </select>
+            <button id="startBtn" class="btn">Start Game</button>
+            <button id="restartBtn" class="btn ghost hidden">Play Again</button>
+            <button id="leaveBtn" class="btn ghost">Leave</button>
+          </div>
         </div>
       </header>
 
@@ -70,7 +74,7 @@
 
       <section class="card">
         <h3>Judge Picks Winner</h3>
-        <p id="roundStatus" class="sub"></p>
+        <p id="roundStatus" class="sub" aria-live="polite"></p>
         <div id="roundResult" class="result hidden"></div>
         <div id="submissions" class="submissions"></div>
       </section>
@@ -79,7 +83,7 @@
         <div id="toast" class="toast hidden"></div>
         <div class="head-row">
           <h3>Chat</h3>
-          <span id="conn" class="conn">Connecting...</span>
+          <span id="conn" class="conn" aria-live="polite">Connecting...</span>
         </div>
         <div id="chatLog" class="chat-log"></div>
         <div class="row">

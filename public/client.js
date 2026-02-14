@@ -1,5 +1,5 @@
 const socket = io();
-const BUILD_ID = '2026-02-13-1740';
+const BUILD_ID = '2026-02-13-2115';
 let roomCode = null;
 let state = null;
 let selected = [];
@@ -141,9 +141,17 @@ function render() {
   const me = state.me;
   const isHost = me && state.hostId === me.id;
   $('#youAreHost').classList.toggle('hidden', !isHost);
-  $('#startBtn').style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
+  const startBtn = $('#startBtn');
+  const restartBtn = $('#restartBtn');
+  const submitBtn = $('#submitBtn');
+
+  startBtn.style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
   $('#winScore').style.display = state.started ? 'none' : (isHost ? 'inline-flex' : 'none');
-  $('#restartBtn').classList.toggle('hidden', !(state.phase === 'ended' && isHost));
+  restartBtn.classList.toggle('hidden', !(state.phase === 'ended' && isHost));
+
+  startBtn.classList.remove('primary');
+  restartBtn.classList.remove('primary');
+  submitBtn.classList.remove('primary');
   renderTimer();
 
   $('#blackCard').textContent = state.currentBlack ? state.currentBlack.text : 'Waiting for host to start…';
@@ -162,8 +170,11 @@ function render() {
       ? 'You are the judge this round.'
       : (me?.submitted ? 'Submitted. Waiting for others...' : 'Waiting...'));
 
-  $('#submitBtn').style.display = canPlay ? 'inline-flex' : 'none';
-  $('#submitBtn').disabled = !canPlay || selected.length !== pick;
+  submitBtn.style.display = canPlay ? 'inline-flex' : 'none';
+  submitBtn.disabled = !canPlay || selected.length !== pick;
+  if (canPlay) submitBtn.classList.add('primary');
+  if (!state.started && isHost) startBtn.classList.add('primary');
+  if (state.phase === 'ended' && isHost) restartBtn.classList.add('primary');
   $('#submittedBadge').classList.toggle('hidden', !(me?.submitted && state.phase === 'playing'));
 
   const turnBadge = $('#turnBadge');
@@ -208,7 +219,7 @@ function render() {
   const canJudge = state.phase === 'judging' && me && me.id === czarId;
   $('#submissions').innerHTML = (state.submissions || []).map(s => {
     const cards = s.cards.map(c => `<div>${escapeHtml(c)}</div>`).join('');
-    return `<div class='entry'>${cards}${canJudge ? `<button class='btn' data-win='${s.id}'>Pick Winner</button>` : ''}</div>`;
+    return `<div class='entry'>${cards}${canJudge ? `<button class='btn primary' data-win='${s.id}'>Pick Winner</button>` : ''}</div>`;
   }).join('') || '<p class="sub">Waiting for submissions...</p>';
 
   document.querySelectorAll('[data-win]').forEach(b => {
@@ -219,7 +230,10 @@ function render() {
 function addChat(html) {
   const node = document.createElement('div');
   node.innerHTML = html;
-  $('#chatLog').prepend(node);
+  const log = $('#chatLog');
+  const nearBottom = (log.scrollHeight - log.scrollTop - log.clientHeight) < 40;
+  log.append(node);
+  if (nearBottom) log.scrollTop = log.scrollHeight;
 }
 
 function setConn(text) {
